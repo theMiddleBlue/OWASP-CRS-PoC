@@ -1,0 +1,42 @@
+version: "3"
+services:
+
+  crs:
+    user: root
+    image: franbuehler/modsecurity-crs-rp
+    ports:
+      - "8001:8001"
+    container_name: modsec-crs
+    environment:
+      - PORT=8001
+      - BACKEND=http://172.16.7.26:3000
+      - PARANOIA=1
+
+    volumes:
+      - ./conf/httpd.conf:/etc/apache2/conf/httpd.conf
+      - ./logs/modsec_audit.log:/var/log/apache2/modsec_audit.log
+      - ./logs/modsec_debug.log:/var/log/apache2/modsec_debug.log
+      - ./logs/audit:/var/log/apache2/audit
+    networks:
+      app_net:
+        ipv4_address: 172.16.7.25
+
+  nodejsapp:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: vuln-nodejs-app
+    container_name: vuln-nodejs-app
+    ports:
+      - 3000:3000
+    networks:
+      app_net:
+        ipv4_address: 172.16.7.26
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.7.0/24
