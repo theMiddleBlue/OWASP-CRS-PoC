@@ -1,0 +1,27 @@
+version: "3"
+services:
+
+  nginx:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: nginx-modsec-crs
+    container_name: nginx-modsec-crs
+    ports:
+      - 3000:80
+    volumes: 
+      - ./conf/nginx.conf:/usr/local/nginx/conf/nginx.conf
+      - ./conf/modsecurity.conf:/usr/local/nginx/conf/modsecurity.conf
+      - ./conf/crs-setup.conf:/opt/owasp-modsecurity-crs/crs-setup.conf
+      - ./logs/audit:/usr/local/nginx/logs/modsecurity
+    networks:
+      app_net:
+        ipv4_address: 172.16.7.26
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.7.0/24
