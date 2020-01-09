@@ -38,9 +38,7 @@ function wait_crs {
 	echo -e "\n[*] CRS Ready."
 }
 
-#touch "${DIR}/logs/modsec_debug.log"
-#touch "${DIR}/logs/modsec_audit.log"
-#chmod 777 ${DIR}/logs/modsec_*.log
+touch "${DIR}/logs/audit/debug.log"
 chmod 777 ${DIR}/logs/audit
 
 echo "[*] Build and run all containers"
